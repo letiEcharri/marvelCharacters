@@ -38,9 +38,9 @@ extension DataSource {
         let hash = (timestamp + privateKey + publicKey).toMD5()
         
         return [
-            URLQueryItem(name: "ts", value: timestamp),
-            URLQueryItem(name: "apikey", value: publicKey),
-            URLQueryItem(name: "hash", value: hash)
+            URLQueryItem(name: CharacterParameters.timestamp.rawValue, value: timestamp),
+            URLQueryItem(name: CharacterParameters.apikey.rawValue, value: publicKey),
+            URLQueryItem(name: CharacterParameters.hash.rawValue, value: hash)
         ]
     }
     
@@ -92,5 +92,19 @@ extension DataSource {
         
         task.resume()
         
+    }
+}
+
+extension URL {
+    func downloadImage(completion: @escaping (Data) -> Void) {
+        let task = URLSession.shared.dataTask(with: self) { data, response, error in
+            guard let data = data, error == nil else { return }
+
+            DispatchQueue.main.async { /// execute on main thread
+                completion(data)
+            }
+        }
+
+        task.resume()
     }
 }

@@ -17,18 +17,29 @@ class AppCoordinator: Coordinator {
             
     var navigationController: UINavigationController?
     var window: UIWindow
+    let appDependencies: AppDependenciesProtocol
     
     // MARK: - Init
     
-    init(_ window: UIWindow) {
+    init(_ window: UIWindow, appDependencies: AppDependenciesProtocol = AppDependencies()) {
         self.window = window
+        self.appDependencies = appDependencies
     }
     
     // MARK: - Coordinator
     
     func resolve() {
-        let viewController = ViewController()
+        let viewController = appDependencies.makeCharactersListView(signalDelegate: self)
         navigationController = UINavigationController(rootViewController: viewController)
+        navigationController?.modalPresentationStyle = .fullScreen
         window.rootViewController = navigationController
+    }
+}
+
+// MARK: - CharactersList Signal Delegate
+
+extension AppCoordinator: CharactersListSignalDelegate {
+    func handle(_ signal: CharactersListSignal) {
+        
     }
 }
