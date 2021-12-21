@@ -18,4 +18,13 @@ class AppDependencies: AppDependenciesProtocol {
         
         return viewController
     }
+    
+    func makeCharacterDetailView(viewModel: CharacterDetailViewController.Model) -> CharacterDetailViewController {
+        let presenter = CharacterDetailPresenter(viewModel: viewModel)
+        let viewController = CharacterDetailViewController(presenter)
+        
+        presenter.ui = viewController
+        
+        return viewController
+    }
 }

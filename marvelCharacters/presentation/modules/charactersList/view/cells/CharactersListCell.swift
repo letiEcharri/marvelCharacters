@@ -15,7 +15,8 @@ class CharactersListCell: UITableViewCell {
     
     struct Model {
         let title: String
-        var image: UIImage
+        let image: UIImage
+        let id: Int
     }
     
     lazy var titleLabel: UILabel = {
@@ -59,10 +60,11 @@ class CharactersListCell: UITableViewCell {
     }()
     
     func set(with model: Model) {
+        selectionStyle = .none
         image.image = model.image
         titleLabel.text = model.title
         
-        self.addSubview(self.horizontalStackView)
+        addSubview(self.horizontalStackView)
         NSLayoutConstraint.activate([
             self.horizontalStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 5),
             self.horizontalStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5),
