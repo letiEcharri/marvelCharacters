@@ -8,7 +8,7 @@
 import Foundation
 
 enum CharactersListSignal {
-    case description(_ model: Any)
+    case detail(_ model: CharacterDetailViewController.Model)
 }
 
 protocol CharactersListSignalDelegate: AnyObject {
@@ -20,6 +20,7 @@ protocol CharactersListPresenterProtocol where Self: BasePresenter {
     var characters: [CharactersListCell.Model] { get set }
     
     func search(text: String)
+    func didSelect(row: Int)
 }
 
 protocol CharactersListPresenterDelegate: BasePresenterDelegate {

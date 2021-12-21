@@ -34,12 +34,20 @@ class AppCoordinator: Coordinator {
         navigationController?.modalPresentationStyle = .fullScreen
         window.rootViewController = navigationController
     }
+    
+    func navigateToDetail(with model: CharacterDetailViewController.Model) {
+        let viewController = appDependencies.makeCharacterDetailView(viewModel: model)
+        navigationController?.pushViewController(viewController, animated: true)
+    }
 }
 
 // MARK: - CharactersList Signal Delegate
 
 extension AppCoordinator: CharactersListSignalDelegate {
     func handle(_ signal: CharactersListSignal) {
-        
+        switch signal {
+        case .detail(let model):
+            navigateToDetail(with: model)
+        }
     }
 }

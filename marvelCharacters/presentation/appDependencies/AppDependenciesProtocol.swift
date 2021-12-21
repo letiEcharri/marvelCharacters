@@ -9,4 +9,5 @@ import UIKit
 
 protocol AppDependenciesProtocol {
     func makeCharactersListView(signalDelegate: CharactersListSignalDelegate) -> CharactersListViewController
+    func makeCharacterDetailView(viewModel: CharacterDetailViewController.Model) -> CharacterDetailViewController
 }

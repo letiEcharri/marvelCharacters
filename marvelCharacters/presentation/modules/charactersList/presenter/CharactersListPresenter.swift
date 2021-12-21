@@ -29,6 +29,11 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
     override func viewWillAppear() {
         super.viewWillAppear()
         
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
         // Ask for 50 chartacters from Avengers series to init the page
         let parameters: [String: String] = [
             CharacterParameters.series.rawValue: "354",
@@ -42,6 +47,11 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
         let parameters = [CharacterParameters.nameStartsWith.rawValue: text]
         
         getCharacters(parameters: parameters)
+    }
+    
+    func didSelect(row: Int) {
+        let item = characters[row]
+        getCharacterDetail(with: item.id)
     }
     
     private func getCharacters(parameters: [String: String]?) {
@@ -59,7 +69,8 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
                 if let url = URL(string: item.thumbnail.path + "." + item.thumbnail.thumbnailExtension) {
                     url.downloadImage { data in
                         self?.characters.append(CharactersListCell.Model(title: item.name,
-                                                                         image: UIImage(data: data) ?? UIImage()))
+                                                                         image: UIImage(data: data) ?? UIImage(),
+                                                                         id: item.id))
                         group.leave()
                     }
                 }
@@ -79,5 +90,43 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
                 self?.ui?.showAlert(title: "ERROR", message: error.localizedDescription)
             }
         }
+    }
+    
+    private func getCharacterDetail(with id: Int) {
+        ui?.showLoading()
+        
+        interactor.getCharacters(with: id, parameters: nil) { [weak self] response in
+            
+            if let character = response.first,
+                let url = URL(string: character.thumbnail.path + "." + character.thumbnail.thumbnailExtension) {
+                
+                let comicsItems = character.comics.items.compactMap { item in
+                    item.name
+                }
+                let seriesItems = character.series.items.compactMap { item in
+                    item.name
+                }
+                
+                let comics = CharacterDetailViewController.Model.Section(name: "Comics", items: comicsItems)
+                let series = CharacterDetailViewController.Model.Section(name: "Series", items: seriesItems)
+                let description = CharacterDetailViewController.Model.Section(name: "Descipción", items: [character.resultDescription])
+                
+                url.downloadImage { data in
+                    self?.ui?.hideLoading()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        self?.signalDelegate.handle(.detail(.init(image: UIImage(data: data) ?? UIImage(),
+                                                                  name: character.name,
+                                                                  sections: [description, comics, series])))
+                    }
+                }
+            }
+            
+        } failure: { [weak self] error in
+            self?.ui?.hideLoading()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self?.ui?.showAlert(title: "ERROR", message: error.localizedDescription)
+            }
+        }
+
     }
 }
