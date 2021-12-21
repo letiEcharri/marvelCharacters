@@ -48,7 +48,9 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
         
         characters.removeAll()
         
-        interactor.getCharacters(with: nil, parameters: parameters) { response in
+        ui?.showLoading()
+        
+        interactor.getCharacters(with: nil, parameters: parameters) { [weak self] response in
             
             let group = DispatchGroup()
             
@@ -64,14 +66,18 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
             }
             
             group.notify(queue: .main) {
-                self.ui?.reloadData()
-                if self.characters.count == 0 {
-                    self.ui?.show(message: "SIN RESULTADOS")
+                self?.ui?.reloadData()
+                self?.ui?.hideLoading()
+                if self?.characters.count == 0 {
+                    self?.ui?.show(message: "SIN RESULTADOS")
                 }
             }
             
-        } failure: { error in
-            self.ui?.show(message: error.localizedDescription)
+        } failure: { [weak self] error in
+            self?.ui?.hideLoading()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self?.ui?.showAlert(title: "ERROR", message: error.localizedDescription)
+            }
         }
     }
 }

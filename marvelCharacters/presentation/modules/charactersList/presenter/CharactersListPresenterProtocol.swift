@@ -24,4 +24,7 @@ protocol CharactersListPresenterProtocol where Self: BasePresenter {
 
 protocol CharactersListPresenterDelegate: BasePresenterDelegate {
     func show(message: String)
+    func showLoading()
+    func hideLoading()
+    func showAlert(title: String, message: String)
 }

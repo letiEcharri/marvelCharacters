@@ -134,6 +134,26 @@ extension CharactersListViewController: CharactersListPresenterDelegate {
         messageLabel.text = message
         messageLabel.isHidden = false
     }
+    
+    func showLoading() {
+        let loadingVC = LoadingViewController()
+        loadingVC.modalPresentationStyle = .overCurrentContext
+        loadingVC.modalTransitionStyle = .crossDissolve
+               
+        present(loadingVC, animated: true, completion: nil)
+    }
+    
+    func hideLoading() {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .loading, object: nil)
+        }
+    }
+    
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "ACEPTAR", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 // MARK: - SearchBar Delegate
