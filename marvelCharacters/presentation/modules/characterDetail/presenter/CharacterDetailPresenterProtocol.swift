@@ -8,7 +8,7 @@
 import Foundation
 
 protocol CharacterDetailPresenterProtocol where Self: BasePresenter {
-    var ui: CharacterDetailPresenterDelegate? { get set }
+    var viewDelegate: CharacterDetailPresenterDelegate? { get set }
     var viewModel: CharacterDetailViewController.Model { get set }
 }
 

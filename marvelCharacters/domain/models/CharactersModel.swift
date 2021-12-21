@@ -23,7 +23,7 @@ struct CharactersDataClass: Codable {
 
 // MARK: - Result
 struct CharactersResult: Codable {
-    let id: Int
+    let identifier: Int
     let name, resultDescription: String
     let modified: String
     let thumbnail: CharactersThumbnail
@@ -34,7 +34,8 @@ struct CharactersResult: Codable {
     let urls: [CharactersURLElement]
 
     enum CodingKeys: String, CodingKey {
-        case id, name
+        case identifier = "id"
+        case name
         case resultDescription = "description"
         case modified, thumbnail, resourceURI, comics, series, stories, events, urls
     }

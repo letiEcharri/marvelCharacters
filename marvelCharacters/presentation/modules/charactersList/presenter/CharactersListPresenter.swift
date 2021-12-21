@@ -11,15 +11,15 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
     
     // MARK: - Properties
     
-    var ui: CharactersListPresenterDelegate?
+    var viewDelegate: CharactersListPresenterDelegate?
     var characters: [CharactersListCell.Model] = [CharactersListCell.Model]()
     
-    private var signalDelegate: CharactersListSignalDelegate
+    private var signalDelegate: CharactersListNavigationDelegate
     private let interactor: CharactersListInteractorProtocol
     
     // MARK: - Initialization
     
-    init(signalDelegate: CharactersListSignalDelegate, interactor: CharactersListInteractorProtocol) {
+    init(signalDelegate: CharactersListNavigationDelegate, interactor: CharactersListInteractorProtocol) {
         self.signalDelegate = signalDelegate
         self.interactor = interactor
     }
@@ -46,14 +46,14 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
     
     func didSelect(row: Int) {
         let item = characters[row]
-        getCharacterDetail(with: item.id)
+        getCharacterDetail(with: item.identifier)
     }
     
     private func getCharacters(parameters: [String: String]?) {
         
         characters.removeAll()
         
-        ui?.showLoading()
+        viewDelegate?.showLoading()
         
         interactor.getCharacters(with: nil, parameters: parameters) { [weak self] response in
             
@@ -65,32 +65,32 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
                     url.downloadImage { data in
                         self?.characters.append(CharactersListCell.Model(title: item.name,
                                                                          image: UIImage(data: data) ?? UIImage(),
-                                                                         id: item.id))
+                                                                         identifier: item.identifier))
                         group.leave()
                     }
                 }
             }
             
             group.notify(queue: .main) {
-                self?.ui?.reloadData()
-                self?.ui?.hideLoading()
+                self?.viewDelegate?.reloadData()
+                self?.viewDelegate?.hideLoading()
                 if self?.characters.count == 0 {
-                    self?.ui?.show(message: "SIN RESULTADOS")
+                    self?.viewDelegate?.show(message: "SIN RESULTADOS")
                 }
             }
             
         } failure: { [weak self] error in
-            self?.ui?.hideLoading()
+            self?.viewDelegate?.hideLoading()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self?.ui?.showAlert(title: "ERROR", message: error.localizedDescription)
+                self?.viewDelegate?.showAlert(title: "ERROR", message: error.localizedDescription)
             }
         }
     }
     
-    private func getCharacterDetail(with id: Int) {
-        ui?.showLoading()
+    private func getCharacterDetail(with identifier: Int) {
+        viewDelegate?.showLoading()
         
-        interactor.getCharacters(with: id, parameters: nil) { [weak self] response in
+        interactor.getCharacters(with: identifier, parameters: nil) { [weak self] response in
             
             if let character = response.first,
                 let url = URL(string: character.thumbnail.path + "." + character.thumbnail.thumbnailExtension) {
@@ -107,9 +107,9 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
                 let description = CharacterDetailViewController.Model.Section(name: "Descipción", items: [character.resultDescription])
                 
                 url.downloadImage { data in
-                    self?.ui?.hideLoading()
+                    self?.viewDelegate?.hideLoading()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        self?.signalDelegate.handle(.detail(.init(image: UIImage(data: data) ?? UIImage(),
+                        self?.signalDelegate.navigate(to: .detail(.init(image: UIImage(data: data) ?? UIImage(),
                                                                   name: character.name,
                                                                   sections: [description, comics, series])))
                     }
@@ -117,9 +117,9 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
             }
             
         } failure: { [weak self] error in
-            self?.ui?.hideLoading()
+            self?.viewDelegate?.hideLoading()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self?.ui?.showAlert(title: "ERROR", message: error.localizedDescription)
+                self?.viewDelegate?.showAlert(title: "ERROR", message: error.localizedDescription)
             }
         }
 
