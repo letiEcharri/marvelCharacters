@@ -83,8 +83,9 @@ class CharactersListViewController: UIViewController {
     
     override func loadView() {
         super.loadView()
+        navigationController?.setNavigationBarHidden(false, animated: true)
         view.backgroundColor = .white
-        title = "Personajes"
+        title = "PERSONAJES"
         
         self.view.addSubview(messageLabel)
         NSLayoutConstraint.activate([

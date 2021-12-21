@@ -23,7 +23,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             coordinator?.resolve()
         }
         
+        customizeNavigationBar()
+        
         return true
+    }
+    
+    private func customizeNavigationBar() {
+        let navigationBarAppearace = UINavigationBar.appearance()
+        navigationBarAppearace.tintColor = .orange // Items
+        navigationBarAppearace.barTintColor = .red // Background
+        navigationBarAppearace.backgroundColor = .red
+        navigationBarAppearace.titleTextAttributes = [
+            NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 20),
+            NSAttributedString.Key.foregroundColor: UIColor.white
+        ] // Title
     }
 }
 
