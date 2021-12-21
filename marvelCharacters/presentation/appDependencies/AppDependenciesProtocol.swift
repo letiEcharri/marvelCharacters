@@ -8,6 +8,6 @@
 import UIKit
 
 protocol AppDependenciesProtocol {
-    func makeCharactersListView(signalDelegate: CharactersListSignalDelegate) -> CharactersListViewController
+    func makeCharactersListView(signalDelegate: CharactersListNavigationDelegate) -> CharactersListViewController
     func makeCharacterDetailView(viewModel: CharacterDetailViewController.Model) -> CharacterDetailViewController
 }
