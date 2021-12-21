@@ -7,16 +7,16 @@
 
 import Foundation
 
-enum CharactersListSignal {
+enum CharactersListNavigation {
     case detail(_ model: CharacterDetailViewController.Model)
 }
 
-protocol CharactersListSignalDelegate: AnyObject {
-    func handle(_ signal: CharactersListSignal)
+protocol CharactersListNavigationDelegate: AnyObject {
+    func navigate(to navigation: CharactersListNavigation)
 }
 
 protocol CharactersListPresenterProtocol where Self: BasePresenter {
-    var ui: CharactersListPresenterDelegate? { get set }
+    var viewDelegate: CharactersListPresenterDelegate? { get set }
     var characters: [CharactersListCell.Model] { get set }
     
     func search(text: String)

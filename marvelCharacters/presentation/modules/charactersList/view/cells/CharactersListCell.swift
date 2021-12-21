@@ -16,7 +16,7 @@ class CharactersListCell: UITableViewCell {
     struct Model {
         let title: String
         let image: UIImage
-        let id: Int
+        let identifier: Int
     }
     
     lazy var titleLabel: UILabel = {

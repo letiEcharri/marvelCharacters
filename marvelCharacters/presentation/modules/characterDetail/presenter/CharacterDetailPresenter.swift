@@ -11,7 +11,7 @@ import Foundation
 class CharacterDetailPresenter: BasePresenter, CharacterDetailPresenterProtocol {
     
     // MARK: - Properties
-    var ui: CharacterDetailPresenterDelegate?
+    var viewDelegate: CharacterDetailPresenterDelegate?
     var viewModel: CharacterDetailViewController.Model
     
     // MARK: - Initialization

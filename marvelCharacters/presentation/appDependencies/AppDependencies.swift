@@ -9,12 +9,12 @@ import Foundation
 
 class AppDependencies: AppDependenciesProtocol {
     
-    func makeCharactersListView(signalDelegate: CharactersListSignalDelegate) -> CharactersListViewController {
+    func makeCharactersListView(signalDelegate: CharactersListNavigationDelegate) -> CharactersListViewController {
         let interactor = CharactersListInteractor()
         let presenter = CharactersListPresenter(signalDelegate: signalDelegate, interactor: interactor)
         let viewController = CharactersListViewController(presenter)
         
-        presenter.ui = viewController
+        presenter.viewDelegate = viewController
         
         return viewController
     }
@@ -23,7 +23,7 @@ class AppDependencies: AppDependenciesProtocol {
         let presenter = CharacterDetailPresenter(viewModel: viewModel)
         let viewController = CharacterDetailViewController(presenter)
         
-        presenter.ui = viewController
+        presenter.viewDelegate = viewController
         
         return viewController
     }

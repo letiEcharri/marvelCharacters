@@ -43,9 +43,9 @@ class AppCoordinator: Coordinator {
 
 // MARK: - CharactersList Signal Delegate
 
-extension AppCoordinator: CharactersListSignalDelegate {
-    func handle(_ signal: CharactersListSignal) {
-        switch signal {
+extension AppCoordinator: CharactersListNavigationDelegate {
+    func navigate(to navigation: CharactersListNavigation) {
+        switch navigation {
         case .detail(let model):
             navigateToDetail(with: model)
         }
