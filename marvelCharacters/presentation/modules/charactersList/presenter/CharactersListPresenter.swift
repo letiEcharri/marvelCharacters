@@ -26,11 +26,6 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
     
     // MARK: - Functions
     
-    override func viewWillAppear() {
-        super.viewWillAppear()
-        
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
