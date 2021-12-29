@@ -29,7 +29,7 @@ class AppCoordinator: Coordinator {
     // MARK: - Coordinator
     
     func resolve() {
-        let viewController = appDependencies.makeCharactersListView(signalDelegate: self)
+        let viewController = appDependencies.makeCharactersListView(navigationDelegate: self)
         navigationController = UINavigationController(rootViewController: viewController)
         navigationController?.modalPresentationStyle = .fullScreen
         window.rootViewController = navigationController
@@ -41,7 +41,7 @@ class AppCoordinator: Coordinator {
     }
 }
 
-// MARK: - CharactersList Signal Delegate
+// MARK: - CharactersList Navigation Delegate
 
 extension AppCoordinator: CharactersListNavigationDelegate {
     func navigate(to navigation: CharactersListNavigation) {

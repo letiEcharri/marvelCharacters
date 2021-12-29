@@ -11,16 +11,16 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
     
     // MARK: - Properties
     
-    var viewDelegate: CharactersListPresenterDelegate?
+    weak var viewDelegate: CharactersListPresenterDelegate?
     var characters: [CharactersListCell.Model] = [CharactersListCell.Model]()
     
-    private var signalDelegate: CharactersListNavigationDelegate
+    private weak var navigationDelegate: CharactersListNavigationDelegate?
     private let interactor: CharactersListInteractorProtocol
     
     // MARK: - Initialization
     
-    init(signalDelegate: CharactersListNavigationDelegate, interactor: CharactersListInteractorProtocol) {
-        self.signalDelegate = signalDelegate
+    init(navigationDelegate: CharactersListNavigationDelegate, interactor: CharactersListInteractorProtocol) {
+        self.navigationDelegate = navigationDelegate
         self.interactor = interactor
     }
     
@@ -91,6 +91,7 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
         viewDelegate?.showLoading()
         
         interactor.getCharacters(with: identifier, parameters: nil) { [weak self] response in
+            guard let self = self else { return }
             
             if let character = response.first,
                 let url = URL(string: character.thumbnail.path + "." + character.thumbnail.thumbnailExtension) {
@@ -107,9 +108,9 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
                 let description = CharacterDetailViewController.Model.Section(name: "Descipción", items: [character.resultDescription])
                 
                 url.downloadImage { data in
-                    self?.viewDelegate?.hideLoading()
+                    self.viewDelegate?.hideLoading()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        self?.signalDelegate.navigate(to: .detail(.init(image: UIImage(data: data) ?? UIImage(),
+                        self.navigationDelegate?.navigate(to: .detail(.init(image: UIImage(data: data) ?? UIImage(),
                                                                   name: character.name,
                                                                   sections: [description, comics, series])))
                     }
@@ -117,9 +118,11 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
             }
             
         } failure: { [weak self] error in
-            self?.viewDelegate?.hideLoading()
+            guard let self = self else { return }
+            
+            self.viewDelegate?.hideLoading()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self?.viewDelegate?.showAlert(title: "ERROR", message: error.localizedDescription)
+                self.viewDelegate?.showAlert(title: "ERROR", message: error.localizedDescription)
             }
         }
 

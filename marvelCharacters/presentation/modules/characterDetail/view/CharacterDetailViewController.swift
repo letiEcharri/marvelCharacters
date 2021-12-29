@@ -142,7 +142,7 @@ extension CharacterDetailViewController: UITableViewDelegate, UITableViewDataSou
         if let viewModel = viewModel {
             let section = viewModel.sections[indexPath.section]
             let description = section.items[indexPath.row]
-            cell.set(text: description != "" ? description : "---")
+            cell.set(text: !description.isEmpty ? description : "---")
         }
         
         return cell

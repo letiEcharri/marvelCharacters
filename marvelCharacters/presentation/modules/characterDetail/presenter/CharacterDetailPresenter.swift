@@ -7,11 +7,10 @@
 
 import Foundation
 
-
 class CharacterDetailPresenter: BasePresenter, CharacterDetailPresenterProtocol {
     
     // MARK: - Properties
-    var viewDelegate: CharacterDetailPresenterDelegate?
+    weak var viewDelegate: CharacterDetailPresenterDelegate?
     var viewModel: CharacterDetailViewController.Model
     
     // MARK: - Initialization
