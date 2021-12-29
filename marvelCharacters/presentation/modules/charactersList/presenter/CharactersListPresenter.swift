@@ -14,13 +14,13 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
     var viewDelegate: CharactersListPresenterDelegate?
     var characters: [CharactersListCell.Model] = [CharactersListCell.Model]()
     
-    private var signalDelegate: CharactersListNavigationDelegate
+    private var navigationDelegate: CharactersListNavigationDelegate
     private let interactor: CharactersListInteractorProtocol
     
     // MARK: - Initialization
     
-    init(signalDelegate: CharactersListNavigationDelegate, interactor: CharactersListInteractorProtocol) {
-        self.signalDelegate = signalDelegate
+    init(navigationDelegate: CharactersListNavigationDelegate, interactor: CharactersListInteractorProtocol) {
+        self.navigationDelegate = navigationDelegate
         self.interactor = interactor
     }
     
@@ -109,7 +109,7 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
                 url.downloadImage { data in
                     self?.viewDelegate?.hideLoading()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        self?.signalDelegate.navigate(to: .detail(.init(image: UIImage(data: data) ?? UIImage(),
+                        self?.navigationDelegate.navigate(to: .detail(.init(image: UIImage(data: data) ?? UIImage(),
                                                                   name: character.name,
                                                                   sections: [description, comics, series])))
                     }

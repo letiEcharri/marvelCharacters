@@ -9,9 +9,9 @@ import Foundation
 
 class AppDependencies: AppDependenciesProtocol {
     
-    func makeCharactersListView(signalDelegate: CharactersListNavigationDelegate) -> CharactersListViewController {
+    func makeCharactersListView(navigationDelegate: CharactersListNavigationDelegate) -> CharactersListViewController {
         let interactor = CharactersListInteractor()
-        let presenter = CharactersListPresenter(signalDelegate: signalDelegate, interactor: interactor)
+        let presenter = CharactersListPresenter(navigationDelegate: navigationDelegate, interactor: interactor)
         let viewController = CharactersListViewController(presenter)
         
         presenter.viewDelegate = viewController
