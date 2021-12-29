@@ -86,4 +86,3 @@ struct CharactersURLElement: Codable {
     let type: String
     let url: String
 }
-

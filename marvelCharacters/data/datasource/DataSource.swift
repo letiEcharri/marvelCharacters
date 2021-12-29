@@ -77,7 +77,7 @@ extension DataSource {
         config.timeoutIntervalForRequest = 10.0
         config.timeoutIntervalForResource = 20.0
         let session = URLSession(configuration: config)
-        let task = session.dataTask(with: request) { (responseData, response, responseError) in
+        let task = session.dataTask(with: request) { (responseData, _, responseError) in
             DispatchQueue.main.async {
                 if let error = responseError {
                     failure(error)
@@ -97,10 +97,10 @@ extension DataSource {
 
 extension URL {
     func downloadImage(completion: @escaping (Data) -> Void) {
-        let task = URLSession.shared.dataTask(with: self) { data, response, error in
+        let task = URLSession.shared.dataTask(with: self) { data, _, error in
             guard let data = data, error == nil else { return }
 
-            DispatchQueue.main.async { /// execute on main thread
+            DispatchQueue.main.async { // execute on main thread
                 completion(data)
             }
         }
