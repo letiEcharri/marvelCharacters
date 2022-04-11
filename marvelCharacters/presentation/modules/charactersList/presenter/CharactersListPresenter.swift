@@ -5,13 +5,13 @@
 //  Created by Leticia Echarri on 20/12/21.
 //
 
-import UIKit
+import Foundation
 
 class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
     
     // MARK: - Properties
     
-    weak var viewDelegate: CharactersListPresenterDelegate?
+    var viewDelegate: CharactersListPresenterDelegate?
     var characters: [CharactersListCell.Model] = [CharactersListCell.Model]()
     
     private weak var navigationDelegate: CharactersListNavigationDelegate?
@@ -56,34 +56,22 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
         viewDelegate?.showLoading()
         
         interactor.getCharacters(with: nil, parameters: parameters) { [weak self] response in
-            
-            let group = DispatchGroup()
-            
-            response.forEach { [weak self] item in
-                group.enter()
+            response.forEach { item in
                 if let url = URL(string: item.thumbnail.path + "." + item.thumbnail.thumbnailExtension) {
-                    url.downloadImage { data in
-                        self?.characters.append(CharactersListCell.Model(title: item.name,
-                                                                         image: UIImage(data: data) ?? UIImage(),
-                                                                         identifier: item.identifier))
-                        group.leave()
-                    }
+                    self?.characters.append(.init(title: item.name, imageURL: url, identifier: item.identifier))
                 }
             }
-            
-            group.notify(queue: .main) {
+            DispatchQueue.main.async {
                 self?.viewDelegate?.reloadData()
-                self?.viewDelegate?.hideLoading()
-                if self?.characters.count == 0 {
-                    self?.viewDelegate?.show(message: "SIN RESULTADOS")
-                }
+            }
+            self?.viewDelegate?.hideLoading()
+            if self?.characters.count == 0 {
+                self?.viewDelegate?.show(message: "SIN RESULTADOS")
             }
             
         } failure: { [weak self] error in
             self?.viewDelegate?.hideLoading()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self?.viewDelegate?.showAlert(title: "ERROR", message: error.localizedDescription)
-            }
+            self?.viewDelegate?.showAlert(title: "ERROR", message: error.localizedDescription)
         }
     }
     
@@ -91,8 +79,7 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
         viewDelegate?.showLoading()
         
         interactor.getCharacters(with: identifier, parameters: nil) { [weak self] response in
-            guard let self = self else { return }
-            
+            self?.viewDelegate?.hideLoading()
             if let character = response.first,
                 let url = URL(string: character.thumbnail.path + "." + character.thumbnail.thumbnailExtension) {
                 
@@ -107,23 +94,14 @@ class CharactersListPresenter: BasePresenter, CharactersListPresenterProtocol {
                 let series = CharacterDetailViewController.Model.Section(name: "Series", items: seriesItems)
                 let description = CharacterDetailViewController.Model.Section(name: "Descipción", items: [character.resultDescription])
                 
-                url.downloadImage { data in
-                    self.viewDelegate?.hideLoading()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        self.navigationDelegate?.navigate(to: .detail(.init(image: UIImage(data: data) ?? UIImage(),
-                                                                  name: character.name,
-                                                                  sections: [description, comics, series])))
-                    }
-                }
+                self?.navigationDelegate?.navigate(to: .detail(.init(imageURL: url,
+                                                                    name: character.name,
+                                                                    sections: [description, comics, series])))
             }
             
         } failure: { [weak self] error in
-            guard let self = self else { return }
-            
-            self.viewDelegate?.hideLoading()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.viewDelegate?.showAlert(title: "ERROR", message: error.localizedDescription)
-            }
+            self?.viewDelegate?.hideLoading()
+            self?.viewDelegate?.showAlert(title: "ERROR", message: error.localizedDescription)
         }
 
     }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CharactersListViewController: UIViewController {
+class CharactersListViewController: BaseViewController {
     
     struct Model {
         let characters: [CharactersListCell.Model]
@@ -141,17 +141,11 @@ extension CharactersListViewController: CharactersListPresenterDelegate {
     }
     
     func showLoading() {
-        let loadingVC = LoadingViewController()
-        loadingVC.modalPresentationStyle = .overCurrentContext
-        loadingVC.modalTransitionStyle = .crossDissolve
-               
-        present(loadingVC, animated: true, completion: nil)
+        showSpinner()
     }
     
     func hideLoading() {
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .loading, object: nil)
-        }
+        hideSpinner()
     }
     
     func showAlert(title: String, message: String) {

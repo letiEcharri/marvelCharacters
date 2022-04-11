@@ -10,7 +10,7 @@ import UIKit
 class CharacterDetailViewController: UIViewController {
     
     struct Model {
-        let image: UIImage
+        let imageURL: URL
         let name: String
         let sections: [Section]
         
@@ -92,7 +92,10 @@ class CharacterDetailViewController: UIViewController {
         if let viewModel = viewModel {
             title = viewModel.name.uppercased()
             navigationController?.setNavigationBarHidden(false, animated: true)
-            picture.image = viewModel.image
+            viewModel.imageURL.downloadImage { [weak self] data in
+                guard let self = self else  { return }
+                self.picture.image = UIImage(data: data)
+            }
         }
         
         view.addSubview(picture)
@@ -109,12 +112,6 @@ class CharacterDetailViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor)
         ])
     }
-}
-
-// MARK: - CharacterDetailPresenterDelegate
-
-extension CharacterDetailViewController: CharacterDetailPresenterDelegate {
-    func reloadData() {}
 }
 
 // MARK: - Table Delegate & Datasource

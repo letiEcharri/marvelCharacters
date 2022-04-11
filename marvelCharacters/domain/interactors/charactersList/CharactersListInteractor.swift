@@ -9,7 +9,11 @@ import Foundation
 
 class CharactersListInteractor: CharactersListInteractorProtocol {
     
-    private let datasource: CharactersListDataSourceProtocol = CharactersListDataSource()
+    private var datasource: CharactersListDataSourceProtocol
+    
+    init(_ datasource: CharactersListDataSourceProtocol) {
+        self.datasource = datasource
+    }
     
     func getCharacters(with identifier: Int?, parameters: [String : String]?, success: @escaping CharactersListResponseBlock, failure: @escaping FailureCompletionBlock) {
         

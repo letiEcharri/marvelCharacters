@@ -15,7 +15,7 @@ class CharactersListCell: UITableViewCell {
     
     struct Model {
         let title: String
-        let image: UIImage
+        let imageURL: URL
         let identifier: Int
     }
     
@@ -61,7 +61,10 @@ class CharactersListCell: UITableViewCell {
     
     func set(with model: Model) {
         selectionStyle = .none
-        image.image = model.image
+        model.imageURL.downloadImage { [weak self] data in
+            guard let self = self else { return }
+            self.image.image = UIImage(data: data)
+        }
         titleLabel.text = model.title
         
         addSubview(self.horizontalStackView)
