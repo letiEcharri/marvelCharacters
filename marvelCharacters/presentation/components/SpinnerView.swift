@@ -1,13 +1,13 @@
 //
-//  LoadingViewController.swift
+//  SpinnerView.swift
 //  marvelCharacters
 //
-//  Created by Leticia Echarri on 21/12/21.
+//  Created by Leticia Echarri on 13/4/22.
 //
 
 import UIKit
 
-class LoadingViewController: UIViewController {
+class SpinnerView: UIView {
     
     var loadingActivityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView()
@@ -34,7 +34,7 @@ class LoadingViewController: UIViewController {
         let blurEffect = UIBlurEffect(style: .dark)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
         
-        blurEffectView.alpha = 0.8
+        blurEffectView.alpha = 0.2
         
         // Setting the autoresizing mask to flexible for
         // width and height will ensure the blurEffectView
@@ -45,34 +45,30 @@ class LoadingViewController: UIViewController {
         
         return blurEffectView
     }()
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(dismissLoading(_:)), name: .loading, object: nil)
-
-        view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-            
-        // Add the blurEffectView with the same
-        // size as view
-        blurEffectView.frame = self.view.bounds
-        view.insertSubview(blurEffectView, at: 0)
-        
-        // Add the loadingActivityIndicator in the
-        // center of view
-        loadingActivityIndicator.center = CGPoint(
-            x: view.bounds.midX,
-            y: view.bounds.midY
-        )
-        view.addSubview(loadingActivityIndicator)
-    }
     
-    @objc private func dismissLoading(_ sender: NotificationCenter) {
-        self.dismiss(animated: true)
-    }
-
-}
-
-extension Notification.Name {
-    static let loading = Notification.Name("loading")
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupView()
+      }
+      
+      required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setupView()
+      }
+      
+      private func setupView() {
+          backgroundColor = UIColor.black.withAlphaComponent(0.3)
+          // Add the blurEffectView with the same
+          // size as view
+          blurEffectView.frame = self.bounds
+          insertSubview(blurEffectView, at: 0)
+          
+          // Add the loadingActivityIndicator in the
+          // center of view
+          loadingActivityIndicator.center = CGPoint(
+              x: bounds.midX,
+              y: bounds.midY
+          )
+          addSubview(loadingActivityIndicator)
+      }
 }

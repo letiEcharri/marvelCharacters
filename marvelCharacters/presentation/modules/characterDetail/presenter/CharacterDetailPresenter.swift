@@ -10,7 +10,6 @@ import Foundation
 class CharacterDetailPresenter: BasePresenter, CharacterDetailPresenterProtocol {
     
     // MARK: - Properties
-    weak var viewDelegate: CharacterDetailPresenterDelegate?
     var viewModel: CharacterDetailViewController.Model
     
     // MARK: - Initialization

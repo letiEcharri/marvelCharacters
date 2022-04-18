@@ -1,24 +1,13 @@
 //
-//  DataSource.swift
+//  BaseProvider.swift
 //  marvelCharacters
 //
-//  Created by Leticia Echarri on 20/12/21.
+//  Created by Leticia Echarri on 18/4/22.
 //
 
 import Foundation
 
-typealias SuccessCompletionBlock = (_ object: AnyObject) -> Void
-typealias FailureCompletionBlock = (_ error: Error) -> Void
-
-enum DataSourceModule: String {
-    case characters = "/characters"
-}
-
-protocol DataSource {
-    func executeRequest(from module: DataSourceModule, identifier: Int?, parameters: [String: Any]?, success: @escaping (SuccessCompletionBlock), failure: @escaping FailureCompletionBlock)
-}
-
-extension DataSource {
+class BaseProvider: DataSource {
     
     private var urlBase: String {
         "http://gateway.marvel.com/v1/public"
@@ -32,8 +21,7 @@ extension DataSource {
         ""
     }
     
-    private func getQueryItems() -> [URLQueryItem] {
-        
+    private var urlQueryItems: [URLQueryItem] {
         let timestamp = String(Date().timeIntervalSince1970)
         let hash = (timestamp + privateKey + publicKey).toMD5()
         
@@ -44,7 +32,9 @@ extension DataSource {
         ]
     }
     
-    func executeRequest(from module: DataSourceModule, identifier: Int?, parameters: [String: Any]?, success: @escaping (SuccessCompletionBlock), failure: @escaping FailureCompletionBlock) {
+    private var task: URLSessionTask?
+    
+    func executeRequest(from module: DataSourceModule, identifier: Int?, parameters: [String : Any]?, success: @escaping (SuccessCompletionBlock), failure: @escaping FailureCompletionBlock) {
         
         var urlBaseString = urlBase + module.rawValue
         
@@ -63,7 +53,7 @@ extension DataSource {
             }
             queryItems = items
         }
-        queryItems.append(contentsOf: getQueryItems())
+        queryItems.append(contentsOf: urlQueryItems)
         urlComponents.queryItems = queryItems
         
         guard let url = urlComponents.url else {
@@ -77,7 +67,7 @@ extension DataSource {
         config.timeoutIntervalForRequest = 10.0
         config.timeoutIntervalForResource = 20.0
         let session = URLSession(configuration: config)
-        let task = session.dataTask(with: request) { (responseData, _, responseError) in
+        task = session.dataTask(with: request) { (responseData, _, responseError) in
             DispatchQueue.main.async {
                 if let error = responseError {
                     failure(error)
@@ -90,21 +80,6 @@ extension DataSource {
             }
         }
         
-        task.resume()
-        
-    }
-}
-
-extension URL {
-    func downloadImage(completion: @escaping (Data) -> Void) {
-        let task = URLSession.shared.dataTask(with: self) { data, _, error in
-            guard let data = data, error == nil else { return }
-
-            DispatchQueue.main.async { // execute on main thread
-                completion(data)
-            }
-        }
-
-        task.resume()
+        task?.resume()
     }
 }

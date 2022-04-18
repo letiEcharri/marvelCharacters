@@ -12,13 +12,13 @@ struct CharactersModel: Codable {
     let code: Int
     let status, copyright, attributionText, attributionHTML: String
     let etag: String
-    let data: CharactersDataClass
+    var data: CharactersDataClass
 }
 
 // MARK: - DataClass
 struct CharactersDataClass: Codable {
     let offset, limit, total, count: Int
-    let results: [CharactersResult]
+    var results: [CharactersResult]
 }
 
 // MARK: - Result

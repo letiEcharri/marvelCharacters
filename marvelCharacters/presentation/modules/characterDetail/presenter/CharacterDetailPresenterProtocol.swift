@@ -8,9 +8,5 @@
 import Foundation
 
 protocol CharacterDetailPresenterProtocol where Self: BasePresenter {
-    var viewDelegate: CharacterDetailPresenterDelegate? { get set }
     var viewModel: CharacterDetailViewController.Model { get set }
-}
-
-protocol CharacterDetailPresenterDelegate: BasePresenterDelegate {
 }
