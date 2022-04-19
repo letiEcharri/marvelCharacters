@@ -14,11 +14,17 @@ class BaseProvider: DataSource {
     }
     
     private var publicKey: String {
-        ""
+        if let key = Bundle.main.object(forInfoDictionaryKey: "PUBLIC_KEY") as? String {
+            return key
+        }
+        return ""
     }
     
     private var privateKey: String {
-        ""
+        if let key = Bundle.main.object(forInfoDictionaryKey: "PRIVATE_KEY") as? String {
+            return key
+        }
+        return ""
     }
     
     private var urlQueryItems: [URLQueryItem] {
